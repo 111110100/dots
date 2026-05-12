@@ -12,9 +12,9 @@ Plugin 'VundleVim/Vundle.vim'
 Plugin 'itchyny/lightline.vim'
 Plugin 'luochen1990/rainbow'
 Plugin 'andreasvc/vim-256noir'
-Plugin 'tpope/vim-fugitive'
 Plugin 'ghifarit53/tokyonight-vim'
 Plugin 'dhruvasagar/vim-table-mode'
+Plugin 'airblade/vim-gitgutter'
 call vundle#end()          "required
 filetype plugin indent on  "required
 
@@ -45,14 +45,6 @@ set belloff=all
 
 let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
-
-function MyFugitiveHead()
-  let head = FugitiveHead()
-  if head != ""
-    let head = "\uf126 " .. head
-  endif
-  return head
-endfunction
 
 "colorscheme 256_noir
 "TokyoNight
@@ -104,3 +96,32 @@ inoreabbrev <expr> <bar><bar>
 inoreabbrev <expr> __
           \ <SID>isAtStartOfLine('__') ?
           \ '<c-o>:silent! TableModeDisable<cr>' : '__'
+
+" Git Gutter
+highlight GitGutterAdd    ctermfg=green
+highlight GitGutterChange ctermfg=yellow
+highlight GitGutterDelete ctermfg=red
+set signcolumn=yes
+
+" Strict whitspace
+set list
+set listchars=tab:>-,trail:•,extends:>,precedes:<
+" Optional: Highlight trailing whitespace in red
+highlight ExtraWhitespace ctermbg=red guibg=red
+match ExtraWhitespace /\s\+$/
+
+autocmd FileType c,cpp,java,php,python,javascript,markdown,vim autocmd BufWritePre <buffer> :%s/\s\+$//e
+
+" Pressing <Leader>md will open a vertical split on the right and run leaf
+nnoremap <Leader>md :vertical botright terminal leaf -w %<CR>
+
+" Pressing <Leader>dt will show differences of the two files
+function! ToggleDiff()
+    if &diff
+        windo diffoff
+    else
+        windo diffthis
+    endif
+endfunction
+
+nnoremap <Leader>dt :call ToggleDiff()<CR>
