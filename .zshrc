@@ -78,7 +78,13 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+# plugins=(git)
+plugins=(
+    git
+    fzf
+    zsh-autosuggestions
+    macos
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -117,3 +123,14 @@ eval "$(fzf --zsh)"
 
 # fvim
 alias fv="fzf --print0 | xargs -0 -o vim"
+
+function seecert () {
+  nslookup $1
+  (openssl s_client -showcerts -servername $1 -connect $1:443 <<< "Q" | openssl x509 -text | grep -iA2 "Validity")
+}
+
+# Disable CRTRL + D to not accidentally logoff in tmux
+setopt ignoreeof # Same effect as IGNOREEOF=10
+
+# tmux
+export DISABLE_AUTO_TITLE='true'
